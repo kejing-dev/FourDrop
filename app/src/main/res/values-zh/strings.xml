@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 文案照搬设计包 content.*（D28）；标 added 的是设计包里没有、ui-audit.md 里列出的。 -->
+<resources>
+    <string name="app_name">四子棋</string>
+    <string name="lang_code">zh</string>
+
+    <string name="tab_play">对局</string>
+    <string name="tab_rules">规则</string>
+    <string name="tab_settings">设置</string>
+
+    <!-- 席位牌（content.plaqueLines） -->
+    <string name="s00">正在摆架子…</string>
+    <string name="plaque_your_turn">轮到你</string>
+    <string name="plaque_thinking">它在想…</string>
+    <string name="plaque_pass_yellow">轮到黄，递给 TA</string>
+    <string name="plaque_pass_red">轮到红，递给 TA</string>
+    <string name="plaque_full">这列满了</string>
+    <string name="plaque_giveaway">投这儿，它上面那格就四连了</string>
+    <string name="plaque_pull_more">再拉到底，这盘就倒掉</string>
+    <string name="plaque_you_win">你赢了</string>
+    <string name="plaque_it_wins">它赢了</string>
+    <string name="plaque_red_wins">红赢了</string>
+    <string name="plaque_yellow_wins">黄赢了</string>
+    <string name="plaque_draw">平局</string>
+    <string name="plaque_open_panel">捏一下，打开控制窗</string>
+    <string name="plaque_resumed">接着上次</string>
+    <!-- added：S07 -->
+    <string name="plaque_clearing">哗啦，倒出来了</string>
+
+    <!-- 对局页状态行（added：回合牌下面那一行） -->
+    <string name="status_play">看准一列，捏一下。再捏一下，它掉下去。</string>
+    <string name="status_aim">再捏一下这列就落；点托盘放回去。</string>
+    <string name="status_grab">拿到列口上方松手。</string>
+    <string name="status_thinking">它的子会先悬一下再落。</string>
+    <string name="status_dropping">哒哒哒…</string>
+    <string name="status_clearing">子在回托盘。</string>
+    <string name="status_next">下一盘换成：%1$s</string>
+    <string name="status_moves">第 %1$d 手 · %2$s</string>
+    <string name="result_line">%1$s连成了%2$s · %3$d 手</string>
+    <string name="result_draw">平局，两边都空了</string>
+    <string name="side_red">红</string>
+    <string name="side_yellow">黄</string>
+    <string name="line_row">横线</string>
+    <string name="line_column">竖线</string>
+    <string name="line_diagonal">斜线</string>
+
+    <!-- 对手（gameSpec.ai.levels、content.tone） -->
+    <string name="opp_easy">轻松</string>
+    <string name="opp_serious">认真</string>
+    <string name="opp_hard">困难</string>
+    <string name="opp_two">两个人</string>
+    <string name="opp_easy_note">会漏看斜线</string>
+    <string name="opp_serious_note">看六步</string>
+    <string name="opp_hard_note">几乎不犯错；所以让你先</string>
+    <string name="opp_two_note">双人同机，轮流戴一台头显</string>
+    <string name="btn_opponent">对手：%1$s</string>
+    <string name="btn_opponent_next">对手：%1$s（下一盘）</string>
+    <string name="opp_title">选对手</string>
+    <string name="opp_next_game">正在下，下一盘生效</string>
+
+    <!-- 按钮 -->
+    <string name="btn_undo">悔一步</string>
+    <string name="btn_again">再来一局</string>
+    <string name="btn_restart">倒掉重来</string>
+    <string name="btn_mute">静音</string>
+    <string name="btn_sound">打开声音</string>
+    <string name="btn_got_it">知道了</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_quit">退出应用</string>
+    <string name="btn_reopen">重开控制窗</string>
+
+    <!-- 确认 -->
+    <string name="confirm_restart">这盘倒掉？</string>
+    <string name="confirm_restart_line">子都回托盘，重新开始。</string>
+    <string name="confirm_restart_yes">倒掉</string>
+    <string name="confirm_undo">悔掉%1$s刚才那手？</string>
+    <string name="confirm_undo_yes">悔一步</string>
+    <string name="confirm_exit">退出四子棋？</string>
+    <string name="confirm_exit_line">这盘存着，下次打开接着下。</string>
+    <string name="confirm_exit_yes">退出</string>
+
+    <!-- 规则页：三格图解、怎么操作、新手常错 -->
+    <string name="rules_step1">拿到列口</string>
+    <string name="rules_step2">掉到底</string>
+    <string name="rules_step3">连四赢</string>
+    <string name="rules_lead">看准一列，捏一下。再捏一下，它掉下去。</string>
+    <string name="how_to_drop">投子：同一列捏两下 · 手柄：扳机按两下</string>
+    <string name="how_to_carry">拿着投：捏起托盘里的子，到列口松手 · 手柄：按住扳机拖</string>
+    <string name="how_to_dump">新局：捏住黄铜拉手朝自己拉 · 手柄：按住扳机往回拉</string>
+    <string name="mistake_1">搭梯子：你投的子就是它的台阶。先看看上面那格它要不要。</string>
+    <string name="mistake_2">只盯横排。斜线最容易漏，四条方向都扫一眼。</string>
+    <string name="mistake_3">中间列最值钱。开局别往两边丢。</string>
+    <string name="hard_note">困难为什么让你先？四子棋先手有赢法。它让你先，是给你机会。</string>
+    <string name="pvp_note">两个人玩：换人时眼睛没重新标定，用手柄或捏着子投更稳。</string>
+
+    <!-- 设置 -->
+    <string name="settings_language">语言</string>
+    <string name="settings_volume">音量</string>
+    <string name="settings_reduced">减少动态</string>
+    <string name="lang_system">跟随系统</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">English</string>
+    <string name="lang_title">语言</string>
+    <string name="vol_low">小</string>
+    <string name="vol_mid">中</string>
+    <string name="vol_high">大</string>
+    <string name="about_text">v%1$s · 声音：CC0 录音（freesound、Kenney）</string>
+    <string name="reopen_note">把控制窗放回架子旁边。</string>
+</resources>

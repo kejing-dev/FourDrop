@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copied from the design package content.* (D28); lines marked "added" are not in the design and are listed in ui-audit.md. -->
+<resources>
+    <string name="app_name">Four Drop</string>
+    <string name="lang_code">en</string>
+
+    <!-- tabs -->
+    <string name="tab_play">Game</string>
+    <string name="tab_rules">Rules</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- seat plaque lines (content.plaqueLines) -->
+    <string name="s00">Setting up the rack…</string>
+    <string name="plaque_your_turn">Your turn</string>
+    <string name="plaque_thinking">It is thinking…</string>
+    <string name="plaque_pass_yellow">Yellow’s turn. Pass it on.</string>
+    <string name="plaque_pass_red">Red’s turn. Pass it on.</string>
+    <string name="plaque_full">This column is full</string>
+    <string name="plaque_giveaway">Drop here and it wins above.</string>
+    <string name="plaque_pull_more">Pull all the way to dump it.</string>
+    <string name="plaque_you_win">You win</string>
+    <string name="plaque_it_wins">It wins</string>
+    <string name="plaque_red_wins">Red wins</string>
+    <string name="plaque_yellow_wins">Yellow wins</string>
+    <string name="plaque_draw">Draw</string>
+    <string name="plaque_open_panel">Pinch to open the panel</string>
+    <string name="plaque_resumed">Picking up where you left</string>
+    <!-- added: S07 -->
+    <string name="plaque_clearing">Pouring them out</string>
+
+    <!-- panel status row (added: the second line under the turn card) -->
+    <string name="status_play">Pinch a column. Pinch again, it drops.</string>
+    <string name="status_aim">Pinch the same column to drop. Tap your tray to put it back.</string>
+    <string name="status_grab">Bring it over a column and let go.</string>
+    <string name="status_thinking">Its disc hovers before it drops.</string>
+    <string name="status_dropping">Rattling down…</string>
+    <string name="status_clearing">Discs are going back to the trays.</string>
+    <string name="status_next">Next game: %1$s</string>
+    <string name="status_moves">Move %1$d · %2$s</string>
+    <string name="result_line">%1$s made a %2$s · %3$d moves</string>
+    <string name="result_draw">Draw. Both trays are empty.</string>
+    <string name="side_red">Red</string>
+    <string name="side_yellow">Yellow</string>
+    <string name="line_row">row</string>
+    <string name="line_column">column</string>
+    <string name="line_diagonal">diagonal</string>
+
+    <!-- opponents (gameSpec.ai.levels, content.tone) -->
+    <string name="opp_easy">Easy</string>
+    <string name="opp_serious">Serious</string>
+    <string name="opp_hard">Hard</string>
+    <string name="opp_two">Two players</string>
+    <string name="opp_easy_note">Misses diagonals</string>
+    <string name="opp_serious_note">Looks six moves ahead</string>
+    <string name="opp_hard_note">Hardly slips. So you go first.</string>
+    <string name="opp_two_note">Take turns with one headset</string>
+    <string name="btn_opponent">Opponent: %1$s</string>
+    <string name="btn_opponent_next">Opponent: %1$s (next)</string>
+    <string name="opp_title">Choose an opponent</string>
+    <string name="opp_next_game">A game is on. This starts next game.</string>
+
+    <!-- buttons -->
+    <string name="btn_undo">Undo</string>
+    <string name="btn_again">Again?</string>
+    <string name="btn_restart">Dump and restart</string>
+    <string name="btn_mute">Mute</string>
+    <string name="btn_sound">Sound on</string>
+    <string name="btn_got_it">Got it</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_quit">Quit app</string>
+    <string name="btn_reopen">Reopen panel</string>
+
+    <!-- confirmations -->
+    <string name="confirm_restart">Dump this game?</string>
+    <string name="confirm_restart_line">The discs go back to the trays.</string>
+    <string name="confirm_restart_yes">Dump it</string>
+    <string name="confirm_undo">Undo %1$s’s last drop?</string>
+    <string name="confirm_undo_yes">Undo</string>
+    <string name="confirm_exit">Quit Four Drop?</string>
+    <string name="confirm_exit_line">Your game is saved. It comes back next time.</string>
+    <string name="confirm_exit_yes">Quit</string>
+
+    <!-- rules page: the three panels, how to play, newbie mistakes (content.examples / newbieMistakes) -->
+    <string name="rules_step1">Pick a column</string>
+    <string name="rules_step2">It drops</string>
+    <string name="rules_step3">Four wins</string>
+    <string name="rules_lead">Pick a column, pinch. Pinch again, it drops.</string>
+    <string name="how_to_drop">Drop: pinch a column twice · controller: trigger twice</string>
+    <string name="how_to_carry">Carry: pinch a disc in your tray, let go over a column · controller: hold trigger</string>
+    <string name="how_to_dump">New game: pull the brass handle toward you · controller: hold trigger and pull</string>
+    <string name="mistake_1">You\'re building its ladder. Before you drop, look at the hole right above.</string>
+    <string name="mistake_2">Rows are easy to see. Diagonals are what sneak up on you.</string>
+    <string name="mistake_3">The middle column is worth the most. Don\'t start on the edges.</string>
+    <string name="hard_note">Why does Hard let you go first? First player has a winning line in this game. It\'s giving you the shot.</string>
+    <string name="pvp_note">Two players: eye tracking stays tuned to the first person. Use the controller or carry the disc by hand.</string>
+
+    <!-- settings -->
+    <string name="settings_language">Language</string>
+    <string name="settings_volume">Volume</string>
+    <string name="settings_reduced">Reduce motion</string>
+    <string name="lang_system">Follow system</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">English</string>
+    <string name="lang_title">Language</string>
+    <string name="vol_low">Low</string>
+    <string name="vol_mid">Mid</string>
+    <string name="vol_high">High</string>
+    <string name="about_text">v%1$s · sounds: CC0 recordings (freesound, Kenney)</string>
+    <string name="reopen_note">Puts the panel back beside the rack.</string>
+</resources>
