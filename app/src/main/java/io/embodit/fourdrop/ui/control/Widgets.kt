@@ -177,13 +177,13 @@ internal fun VolumeRow(label: String, level: Int, names: List<String>, icon: Int
         Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.size(24.dp), tint = FDColors.Ink)
         Box(Modifier.width(14.dp))
         Txt(label, "settings/volume-label", style = PicoTheme.typography.labelLarge, color = FDColors.Ink, modifier = Modifier.width(110.dp))
+        // the SpatialUI Slider works on 0..1 (it did not honour valueRange 0..2 on the emulator: the thumb sat at the left)
         Slider(
-            value = local,
-            onValueChange = { v -> local = v },
+            value = local / 2f,
+            onValueChange = { v -> local = (v * 2f).coerceIn(0f, 2f) },
             // snap on release (a tap lands too): the stop and the number move together
             onValueChangeFinished = { val stop = kotlin.math.round(local).toInt().coerceIn(0, 2); local = stop.toFloat(); change(stop) },
             modifier = Modifier.weight(1f).height(48.dp),
-            valueRange = 0f..2f,
         )
         Box(Modifier.width(12.dp))
         val k = local.let { kotlin.math.round(it).toInt().coerceIn(0, 2) }

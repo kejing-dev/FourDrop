@@ -32,7 +32,7 @@ object FDColors {
     val Amber = Color(0xFFE0A040)
 
     val CardFace = Color(0xFFFBF6EC)
-    val Oak = Color(0xFFD9B88A)
+    val Oak = Color(0xFFC49C68)
     val OakDark = Color(0xFFA88255)
     val Red = Color(0xFFC8412E)
     val Yellow = Color(0xFFEBD9A8)

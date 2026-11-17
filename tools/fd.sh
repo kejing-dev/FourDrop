@@ -7,7 +7,7 @@
 set -u
 DEV="${DEV:?set DEV=emulator-55xx}"
 PKG=io.embodit.fourdrop
-ADB="${ADB:-$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe}"
+ADB="${ADB:-/c/Users/Admin/Android/Sdk/platform-tools/adb.exe}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 case "${1:-}" in
   cmd) "$ADB" -s "$DEV" shell am broadcast -a $PKG.DEBUG -p $PKG --es cmd "$2" --es a "\"${3:-}\"" >/dev/null ;;

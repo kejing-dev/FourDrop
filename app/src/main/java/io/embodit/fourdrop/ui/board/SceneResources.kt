@@ -58,7 +58,7 @@ internal class SceneResources private constructor() {
     lateinit var oakDark: PhysicallyBasedMaterial; private set
     lateinit var brass: PhysicallyBasedMaterial; private set
     lateinit var slotDark: UnlitMaterial; private set
-    /** Disc lacquer per seat: normal, dimmed (the losers after a four), glowing (the four). */
+    /** Disc lacquer per seat: normal, dimmed to 62 % (the rest after a four; the hue stays readable), glowing (the four, own colour + light). */
     lateinit var lacquer: Map<Seat, PhysicallyBasedMaterial>; private set
     lateinit var lacquerDim: Map<Seat, PhysicallyBasedMaterial>; private set
     lateinit var lacquerGlow: Map<Seat, PhysicallyBasedMaterial>; private set
@@ -127,10 +127,10 @@ internal class SceneResources private constructor() {
             r.brass = pbr(0xB8913F, 0.35f, metal = 0.85f).k()
             r.slotDark = unlit(rgb(0x1A140F)).k()
             r.lacquer = mapOf(Seat.RED to pbr(RED, 0.35f).k(), Seat.YELLOW to pbr(YELLOW, 0.35f).k())
-            r.lacquerDim = mapOf(Seat.RED to pbr(scale(RED, 0.4f), 0.45f, glow = 0f).k(), Seat.YELLOW to pbr(scale(YELLOW, 0.4f), 0.45f, glow = 0f).k())
-            r.lacquerGlow = mapOf(Seat.RED to pbr(RED, 0.3f, glow = 0.55f).k(), Seat.YELLOW to pbr(YELLOW, 0.3f, glow = 0.45f).k())
+            r.lacquerDim = mapOf(Seat.RED to pbr(scale(RED, 0.62f), 0.45f, glow = 0f).k(), Seat.YELLOW to pbr(scale(YELLOW, 0.62f), 0.45f, glow = 0f).k())
+            r.lacquerGlow = mapOf(Seat.RED to pbr(RED, 0.3f, glow = 0.3f).k(), Seat.YELLOW to pbr(YELLOW, 0.3f, glow = 0.25f).k())
             r.ringCalm = unlit(rgb(0xDFF6FF)).k()
-            r.ringWarn = unlit(rgb(0xFF9A2E)).k()
+            r.ringWarn = unlit(rgb(0xC8500E)).k()
             r.barMat = unlit(rgb(0xFFF1C2)).k()
             r.mouthTex = mouthTex.awaitAll()
             r.mouthMats = r.mouthTex.map { unlit(Color4(0.93f, 0.85f, 0.72f, 1f), it).k() }

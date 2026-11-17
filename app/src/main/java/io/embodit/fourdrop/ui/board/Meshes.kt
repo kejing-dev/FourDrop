@@ -237,11 +237,14 @@ internal object Meshes {
         return b.build(name)
     }
 
-    /** A quad in the XY plane facing +Z, UV (0,0) top-left → (1,1) bottom-right (textured plaques, column numbers, the light bar). */
+    /**
+     * A quad in the XY plane facing +Z (textured plaques, column numbers, the light bar). The renderer samples bitmaps
+     * with v up, so the top edge takes v = 1 (checked with the 「F↑」 image on the emulator, D10).
+     */
     fun face(w: Float, h: Float, name: String): MeshResource {
         val pos = listOf(Vector3(-w / 2, h / 2, 0f), Vector3(w / 2, h / 2, 0f), Vector3(w / 2, -h / 2, 0f), Vector3(-w / 2, -h / 2, 0f))
         val nz = Vector3(0f, 0f, 1f)
-        val uv = listOf(Vector2(0f, 0f), Vector2(1f, 0f), Vector2(1f, 1f), Vector2(0f, 1f))
+        val uv = listOf(Vector2(0f, 1f), Vector2(1f, 1f), Vector2(1f, 0f), Vector2(0f, 0f))
         return MeshResource.createWithMeshModel(
             MeshModel(positions = pos, triangleIndices = listOf(0, 3, 2, 0, 2, 1), normals = List(4) { nz }, uv0 = uv),
             BoundingBox(center = Vector3(0f, 0f, 0f), halfExtent = Vector3(w / 2, h / 2, 0.0005f)), name,

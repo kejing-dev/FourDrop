@@ -17,7 +17,7 @@ import kotlin.random.Random
  * Plaques are 32 px per cm, so text heights in centimetres map straight to pixels.
  */
 object BoardTextures {
-    val OAK = Color.rgb(0xD9, 0xB8, 0x8A)
+    val OAK = Color.rgb(0xC4, 0x9C, 0x68)
     val OAK_DARK = Color.rgb(0xA8, 0x82, 0x55)
     const val PX_PER_M = 3200f
 
@@ -104,12 +104,17 @@ object BoardTextures {
         val fm = big.fontMetrics
         val base = h / 2f - (fm.ascent + fm.descent) / 2
         c.drawText("$left", 22f, base, big)
-        // the win count after a small cup mark (a ring with a stem), not a word
-        val cupX = w - 120f
-        val cup = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = PLAQUE_INK; style = Paint.Style.STROKE; strokeWidth = 7f }
-        c.drawArc(RectF(cupX, 36f, cupX + 38f, 80f), 0f, 180f, false, cup)
-        c.drawLine(cupX + 19f, 80f, cupX + 19f, 94f, cup)
-        c.drawLine(cupX + 6f, 96f, cupX + 32f, 96f, cup)
+        // the win count after a small five-point star (a mark, not a word)
+        val cx = w - 112f; val cy = 64f
+        val star = android.graphics.Path()
+        for (k in 0 until 10) {
+            val r = if (k % 2 == 0) 26f else 11f
+            val a = Math.toRadians(-90.0 + k * 36.0)
+            val x = cx + r * Math.cos(a).toFloat(); val y = cy + r * Math.sin(a).toFloat()
+            if (k == 0) star.moveTo(x, y) else star.lineTo(x, y)
+        }
+        star.close()
+        c.drawPath(star, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.rgb(0xB0, 0x7A, 0x1E) })
         c.drawText("$wins", w - 22f, base, small.apply { textSize = textPx(0.016f, false) })
         return bmp
     }

@@ -56,6 +56,7 @@ internal object SceneHolder {
     @Volatile var graph: Graph? = null
     /** The volume's measured uniform scale (1 = the manifest's 0.90 × 0.76 × 0.40 m). */
     @Volatile var scale: Float = 1f
+    @Volatile var scaleLogged: Boolean = false
     /** Debug: draw the 「F↑」 test image on the plaques and column numbers (D10). */
     @Volatile var orientationTest: Boolean = false
 }
@@ -129,7 +130,7 @@ fun BoardScreen() {
                 // VolumeScale: the measured volume width (px → m) over the manifest's 0.90 m (build.md 「体积可缩放就要跟着缩放」)
                 val wM = with(converter) { converter.dpToLength(px.width.toFloat().toDp(), LengthUnit.Meters) }
                 val k = VolumeScale.fromWidth(wM)
-                if (k != SceneHolder.scale) { SceneHolder.scale = k; scene.setScale(k); Log.i(TAG, "SCALE view=${px.width}x${px.height} width=${"%.3f".format(wM)} m k=${"%.3f".format(k)}") }
+                if (k != SceneHolder.scale || !SceneHolder.scaleLogged) { SceneHolder.scaleLogged = true; SceneHolder.scale = k; scene.setScale(k); Log.i(TAG, "SCALE view=${px.width}x${px.height} width=${"%.3f".format(wM)} m k=${"%.3f".format(k)}") }
             }
             .boardInput(remember { BoardTargets() }, remember(graph, scene) { BoardListener(graph, scene) }, BoardInputConfig(dragStartM = 0.02f, logTag = TAG)),
         initial = { content, _ ->
@@ -168,7 +169,7 @@ internal fun plaqueLine(st: PlayState, panelClosed: Boolean, now: Long, s: (Int,
         st.phase == Phase.CLEARING -> t(R.string.plaque_clearing) to false
         st.notice == Notice.RESUMED && st.noticeFresh(now, GameFlow.RESUMED_MS) -> t(R.string.plaque_resumed) to false
         st.phase == Phase.THINKING -> t(R.string.plaque_thinking) to false
-        st.phase == Phase.DROPPING && !two && st.pos.toMove == Seat.YELLOW -> t(R.string.plaque_thinking) to false
+        st.phase == Phase.DROPPING && !two && st.drop?.seat == Seat.YELLOW -> t(R.string.plaque_thinking) to false // its disc is still falling
         two -> t(if (st.pos.toMove == Seat.RED) R.string.plaque_pass_red else R.string.plaque_pass_yellow) to false
         else -> t(R.string.plaque_your_turn) to false
     }

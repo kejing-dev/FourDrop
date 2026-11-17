@@ -29,14 +29,16 @@ def L(h):
 GLASS = "#B4B3B1"  # darkest measured window glass (royal-ur / factory measure)
 pairs = [
     ("正文 Ink / 窗口玻璃", "#1B1F23", GLASS, 4.5), ("次要字 InkSecondary / 玻璃", "#3A3F44", GLASS, 4.5),
-    ("状态卡 Ink / CardFace", "#1B1F23", "#FBF6EC", 4.5), ("卡内次要字 / CardFace", "#3A3F44", "#FBF6EC", 4.5),
-    ("当前题卡 Ink / PrimaryContainer", "#1B1F23", "#EBDDF2", 4.5), ("当前题卡次要字 / PrimaryContainer", "#3A3F44", "#EBDDF2", 4.5),
-    ("主按钮字 白 / Primary", "#FFFFFF", "#7B3A98", 4.5), ("开着的提示键 白 / Primary", "#FFFFFF", "#7B3A98", 4.5),
-    ("退出 / 清掉按钮字 白 / Error", "#FFFFFF", "#B3261E", 4.5), ("新纪录 白 / Primary", "#FFFFFF", "#7B3A98", 4.5),
-    ("规矩页序号 白 / Primary", "#FFFFFF", "#7B3A98", 4.5), ("题名小牌 墨 / 牌面", "#2A1E14", "#F6ECD8", 4.5),
-    ("木签字 墨 / 木签面", "#2A1E14", "#F2DEBC", 4.5), ("拼过的勾 Done / CardFace（图标）", "#2E7D4F", "#FBF6EC", 3.0),
-    ("难度点 胡桃 / CardFace（图标）", "#5E4130", "#FBF6EC", 3.0), ("影子缩略图 / CardFace（图形）", "#231E1B", "#FBF6EC", 3.0),
-    ("规矩图 枫木 / 胡桃（图形）", "#E8C99A", "#5E4130", 3.0),
+    ("回合牌大字 Ink / CardFace", "#1B1F23", "#FBF6EC", 4.5), ("回合牌状态行 InkSecondary / CardFace", "#3A3F44", "#FBF6EC", 4.5),
+    ("选中对手行 Ink / PrimaryContainer", "#1B1F23", "#F6E3C2", 4.5), ("选中对手说明 InkSecondary / PrimaryContainer", "#3A3F44", "#F6E3C2", 4.5),
+    ("主按钮字 白 / Primary（悔一步、再来一局、知道了）", "#FFFFFF", "#8A5414", 4.5), ("静音开着 白 / Primary", "#FFFFFF", "#8A5414", 4.5),
+    ("次按钮字 Ink / fillSecondary 近似 #E4E2DE", "#1B1F23", "#E4E2DE", 4.5),
+    ("危险键字 白 / Error（倒掉、退出）", "#FFFFFF", "#B3261E", 4.5), ("规则页序号 白 / Primary", "#FFFFFF", "#8A5414", 4.5),
+    ("设置行 Ink / CardFace", "#1B1F23", "#FBF6EC", 4.5), ("关于行 InkSecondary / 玻璃", "#3A3F44", GLASS, 4.5),
+    ("席位牌 墨 / 牌面", "#2A1E14", "#F4E9D2", 4.5), ("席位牌提醒 红 / 牌面", "#B3261E", "#F4E9D2", 4.5),
+    ("计数牌 红子数 / 牌面", "#A83222", "#F4E9D2", 3.0), ("计数牌 黄子数 / 牌面", "#7A5A10", "#F4E9D2", 3.0), ("计数牌胜场 墨 / 牌面", "#2A1E14", "#F4E9D2", 4.5),
+    ("列号 墨 / 列口牌（常态底）", "#33261A", "#EDD9B8", 3.0), ("列号 墨 / 列口牌（满列红）", "#33261A", "#F57A6B", 3.0),
+    ("回合牌红子 / CardFace（图形）", "#C8412E", "#FBF6EC", 3.0), ("回合牌黄子描边 / CardFace（图形）", "#9C7A2A", "#FBF6EC", 3.0),
 ]
 print("| 文字 | 前景 | 底色 | 对比度 | 门槛 | 结果 |")
 print("|---|---|---|---|---|---|")
@@ -44,10 +46,9 @@ for n, f, b, t in pairs:
     r = ratio(f, b)
     print(f"| {n} | {f} | {b} | {r:.2f}:1 | {t} | {'过' if r >= t else '不过'} |")
 print()
-lp = [("枫木正面 vs 胡桃板面", "#E8C99A", "#5E4130", 25), ("樱桃木反面 vs 胡桃板面", "#D98A5F", "#5E4130", 15),
-      ("樱桃木反面 vs 影子槽底", "#D98A5F", "#231E1B", 25), ("枫木正面 vs 樱桃木反面", "#E8C99A", "#D98A5F", 0),
-      ("影子槽底 vs 胡桃板面", "#231E1B", "#5E4130", 10), ("槽边亮线 vs 胡桃板面", "#C9A57A", "#5E4130", 20),
-      ("落点标记 vs 板面（要求只深半档）", "#4E3527", "#5E4130", 0), ("枫木 vs 托盘", "#E8C99A", "#6B4A34", 25)]
+lp = [("红子 vs 橡木板", "#C8412E", "#C49C68", 15), ("黄子 vs 橡木板（设计包 needsCheck：分不清就调深一档）", "#EBD9A8", "#C49C68", 15), ("红子 vs 黄子", "#C8412E", "#EBD9A8", 25),
+      ("黄子 vs 孔后透视（暗桌面 #4A3A2A）", "#EBD9A8", "#4A3A2A", 25), ("红子 vs 孔后透视", "#C8412E", "#4A3A2A", 10),
+      ("落点圈 青白 vs 橡木板", "#DFF6FF", "#C49C68", 10), ("落点圈 橙 vs 橡木板", "#C8500E", "#C49C68", 15), ("光条 vs 红子", "#FFF1C2", "#C8412E", 25)]
 print("| 3D 对比 | A | B | 亮度比 | ΔL* | 门槛 ΔL* |")
 print("|---|---|---|---|---|---|")
 for n, a, b, t in lp:
