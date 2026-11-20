@@ -33,6 +33,29 @@ class SpatialApplication : Application() {
         // board-input template: mirror input lines into files/input-log.txt (headset logcat drops lines)
         io.embodit.fourdrop.ui.board.input.BoardInputLog.attach(this)
         graph = Graph(this)
+        // D60 补 (gate back-key): controller B = system BACK. It never exits or sends the scene to the background: a
+        // disc in the hand goes back to the tray, a closed window reopens, otherwise eaten (logged). Caught at the
+        // earliest layer of every window (BackKeys); the OnBackPressedCallback stays as the last fallback.
+        BackKeys.handler = { where -> graph.onBack(where) }
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(a: android.app.Activity, b: android.os.Bundle?) {
+                BackKeys.wrap(a)
+                val ca = a as? androidx.activity.ComponentActivity
+                if (ca == null) { Log.w(TAG, "BACK guard: ${a.javaClass.simpleName} is not a ComponentActivity"); return }
+                ca.onBackPressedDispatcher.addCallback(ca, object : androidx.activity.OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() { BackKeys.handler("dispatcher:${a.javaClass.simpleName}") }
+                })
+                Log.i(TAG, "BACK guard on ${a.javaClass.simpleName}")
+            }
+            override fun onActivityPostCreated(a: android.app.Activity, b: android.os.Bundle?) { BackKeys.wrap(a); BackKeys.sweep("created") }
+            override fun onActivityStarted(a: android.app.Activity) { BackKeys.sweep("started") }
+            override fun onActivityResumed(a: android.app.Activity) { BackKeys.wrap(a); BackKeys.sweep("resumed") }
+            override fun onActivityPostResumed(a: android.app.Activity) { BackKeys.sweep("post-resumed") }
+            override fun onActivityPaused(a: android.app.Activity) {}
+            override fun onActivityStopped(a: android.app.Activity) {}
+            override fun onActivitySaveInstanceState(a: android.app.Activity, b: android.os.Bundle) {}
+            override fun onActivityDestroyed(a: android.app.Activity) {}
+        })
         launch(::mainApp)
     }
 }
@@ -53,6 +76,17 @@ class Graph(context: Context) {
         log = { Log.i(TAG, it) },
     )
     val window = WindowCtl()
+
+    /** BACK / controller B from any window (BackKeys): put the disc in the hand back, else reopen a closed window. */
+    fun onBack(where: String) {
+        val st = flow.state.value
+        when {
+            st.grab != null -> { Log.i(TAG, "BACK $where -> grab back to tray"); flow.grabCancel() }
+            st.aim != null -> { Log.i(TAG, "BACK $where -> aimed disc back to tray"); flow.tapTray(st.handSeat) }
+            !window.panelOpen -> { Log.i(TAG, "BACK $where -> reopen window"); window.reopen() }
+            else -> Log.i(TAG, "BACK $where -> eaten")
+        }
+    }
 
     init {
         scope.launch {

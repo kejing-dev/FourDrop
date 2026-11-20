@@ -2,7 +2,7 @@
 
 A vertical four-in-a-row rack for PICO OS 6 Shared Space (Spatial SDK BOM 6.1.9), package `io.embodit.fourdrop`, v0.1.0.
 Design contract: spatial-app-factory `apps/four-drop/design-package.json` (v4, gate B passed), PRD and sample beside it.
-Skeleton: the factory's volume + control-window pattern (two containers, theme, sound pool, level gate, board-input
+Skeleton: the factory's volume + control-window pattern (two containers, theme, sound pool, BACK keys, board-input
 template, debug receiver, harness); the rules, engine, flow, scene and pages are this app's own.
 
 ## Surfaces

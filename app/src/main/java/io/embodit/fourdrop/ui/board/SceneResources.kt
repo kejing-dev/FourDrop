@@ -58,7 +58,7 @@ internal class SceneResources private constructor() {
     lateinit var oakDark: PhysicallyBasedMaterial; private set
     lateinit var brass: PhysicallyBasedMaterial; private set
     lateinit var slotDark: UnlitMaterial; private set
-    /** Disc lacquer per seat: normal, dimmed to 62 % (the rest after a four; the hue stays readable), glowing (the four, own colour + light). */
+    /** Disc lacquer per seat and [DiscLook], all from [DiscFinish]: every look keeps the disc's own colour (q1-1). */
     lateinit var lacquer: Map<Seat, PhysicallyBasedMaterial>; private set
     lateinit var lacquerDim: Map<Seat, PhysicallyBasedMaterial>; private set
     lateinit var lacquerGlow: Map<Seat, PhysicallyBasedMaterial>; private set
@@ -74,8 +74,8 @@ internal class SceneResources private constructor() {
     lateinit var handleShape: ShapeResource; private set
 
     companion object {
-        const val RED = 0xC8412E
-        const val YELLOW = 0xEBD9A8
+        const val RED = DiscFinish.RED
+        const val YELLOW = DiscFinish.YELLOW
 
         fun pbr(color: Int, rough: Float, metal: Float = 0f, tex: TextureResource? = null, glow: Float = 0.05f): PhysicallyBasedMaterial =
             PhysicallyBasedMaterial.create(BlendingMode.OPAQUE).apply {
@@ -126,9 +126,10 @@ internal class SceneResources private constructor() {
             r.oakDark = pbr(BoardTextures.OAK_DARK and 0xFFFFFF, 0.65f, tex = oakDarkTex.await()).k()
             r.brass = pbr(0xB8913F, 0.35f, metal = 0.85f).k()
             r.slotDark = unlit(rgb(0x1A140F)).k()
-            r.lacquer = mapOf(Seat.RED to pbr(RED, 0.35f).k(), Seat.YELLOW to pbr(YELLOW, 0.35f).k())
-            r.lacquerDim = mapOf(Seat.RED to pbr(scale(RED, 0.62f), 0.45f, glow = 0f).k(), Seat.YELLOW to pbr(scale(YELLOW, 0.62f), 0.45f, glow = 0f).k())
-            r.lacquerGlow = mapOf(Seat.RED to pbr(RED, 0.3f, glow = 0.3f).k(), Seat.YELLOW to pbr(YELLOW, 0.3f, glow = 0.25f).k())
+            fun lacquer(look: DiscLook) = Seat.entries.associateWith { pbr(DiscFinish.base(it, look), 0.35f, glow = DiscFinish.glow(look)).k() }
+            r.lacquer = lacquer(DiscLook.NORMAL)
+            r.lacquerDim = lacquer(DiscLook.DIM)
+            r.lacquerGlow = lacquer(DiscLook.GLOW)
             r.ringCalm = unlit(rgb(0xDFF6FF)).k()
             r.ringWarn = unlit(rgb(0xC8500E)).k()
             r.barMat = unlit(rgb(0xFFF1C2)).k()

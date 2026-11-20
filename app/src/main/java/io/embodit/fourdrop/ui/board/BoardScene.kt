@@ -36,7 +36,7 @@ import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sin
 
-/** How a disc looks: plain lacquer, dimmed (not part of the four), glowing (the four). */
+/** How a disc looks: plain lacquer, the rest after a four (a hair darker), the four (own colour; DiscFinish, q1-1). */
 enum class DiscLook { NORMAL, DIM, GLOW }
 
 data class DiscPose(val pos: V3, val rot: Q4, val visible: Boolean = true, val look: DiscLook = DiscLook.NORMAL)
@@ -174,6 +174,16 @@ object DiscPoses {
     }
 
     /** The column the drop-point ring marks (aimed or carried over), or null. */
+    /**
+     * The four's halo rings (q1-1: the four is marked round the hole, the discs keep their colour): one per cell of the
+     * winning line, in front of the plate, each lighting up as the light bar's wipe reaches it.
+     */
+    fun halos(st: PlayState, now: Long, reduced: Boolean): List<V3> {
+        val line = st.winLine ?: return emptyList()
+        val u = if (reduced) 1f else Motion.easeOutCubic(((now - st.overAt) / st.slow.coerceAtLeast(1)).toFloat() / Motion.WINBAR_MS)
+        return line.withIndex().filter { (k, _) -> u >= k / (line.size - 1f) - 1e-4f }.map { (_, c) -> Layout.cell(c.col, c.row).let { V3(it.x, it.y, Layout.RING_Z) } }
+    }
+
     fun ringColumn(st: PlayState): Int? {
         if (!st.humanTurn) return null
         val c = st.aim?.col ?: st.grab?.snap ?: return null
@@ -215,6 +225,7 @@ internal class BoardScene(private val scope: CoroutineScope) {
     private var handle: Entity? = null
     private var ring: ModelEntity? = null
     private var bar: ModelEntity? = null
+    private val halos = ArrayList<ModelEntity>(4)
     private var seatMat: UnlitMaterial? = null
     private var seatTex: TextureResource? = null
     private var seatShown: String? = null
@@ -303,6 +314,7 @@ internal class BoardScene(private val scope: CoroutineScope) {
         }
         ring = ModelEntity(r.ring, r.ringCalm).apply { setName("ring"); enabled = false; root.addChild(this) }
         bar = ModelEntity(r.bar, r.barMat).apply { setName("winBar"); enabled = false; root.addChild(this) }
+        repeat(4) { k -> halos += ModelEntity(r.ring, r.barMat).apply { setName("halo:$k"); enabled = false; root.addChild(this) } }
         // ---- plaques on the base front
         seatMat = unlitTextured(r)
         root.addChild(ModelEntity(r.seatFace, seatMat!!).apply { setName("seatPlaque"); place(this, L.SEAT_PLAQUE.centre) })
@@ -474,6 +486,11 @@ internal class BoardScene(private val scope: CoroutineScope) {
                 b.transform().setScaleVector(Vector3(len, 1f, 1f))
                 b.enabled = true
             }
+        }
+        val hp = DiscPoses.halos(st, now, reduced)
+        for ((k, h) in halos.withIndex()) {
+            val p = hp.getOrNull(k)
+            if (p == null) h.enabled = false else { place(h, p); h.enabled = true }
         }
     }
 

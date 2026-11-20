@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -64,6 +65,7 @@ import io.embodit.fourdrop.domain.PlayState
 import io.embodit.fourdrop.domain.Rules
 import io.embodit.fourdrop.domain.Seat
 import io.embodit.fourdrop.domain.Settings
+import io.embodit.fourdrop.platform.BackKeys
 import io.embodit.fourdrop.platform.Graph
 import io.embodit.fourdrop.platform.TAG
 import io.embodit.fourdrop.ui.Dialog
@@ -89,7 +91,11 @@ fun ControlWindow() {
     val nav = LocalSpatialNavigator.current
     DisposableEffect(owner, nav) {
         graph.window.attachPanel(nav)
-        val obs = LifecycleEventObserver { _, e -> graph.window.onPanelLifecycle(e.name) }
+        val obs = LifecycleEventObserver { _, e ->
+            graph.window.onPanelLifecycle(e.name)
+            // D60 补: the TabBar and the window pieces are windows of their own; hook their roots for BACK / B
+            if (e.name == "ON_RESUME") for (ms in longArrayOf(0, 500, 1500)) Handler(Looper.getMainLooper()).postDelayed({ BackKeys.sweep("window") }, ms)
+        }
         owner.lifecycle.addObserver(obs)
         onDispose { owner.lifecycle.removeObserver(obs) }
     }
@@ -103,7 +109,7 @@ fun ControlWindow() {
     var now by remember { mutableLongStateOf(SystemClock.uptimeMillis()) }
     LaunchedEffect(Unit) { while (true) { kotlinx.coroutines.delay(250); now = SystemClock.uptimeMillis() } }
 
-    Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 20.dp)) {
+    Box(Modifier.fillMaxSize().onPreviewKeyEvent { e -> BackKeys.route(e.nativeKeyEvent, "compose:window") }.padding(horizontal = 24.dp, vertical = 20.dp)) {
         when {
             Ui.dialog == Dialog.OPPONENT -> OpponentDialog(state, graph)
             Ui.dialog == Dialog.LANGUAGE -> LanguageDialog(settings, graph)
@@ -380,7 +386,7 @@ private fun NativeTabs(tabs: List<Triple<Page, Int, String>>) {
         tabs.forEach { (page, icon, label) ->
             item(
                 selected = Ui.page == page && Ui.dialog == null,
-                onClick = { Ui.page = page; if (Ui.dialog != Dialog.EXIT || page != Page.SETTINGS) Ui.dialog = null },
+                onClick = { Ui.page = page; if (Ui.dialog != Dialog.EXIT || page != Page.SETTINGS) Ui.dialog = null; BackKeys.sweep("tab") },
                 mainContent = { Icon(painter = painterResource(icon), contentDescription = label) },
                 supportContent = { Txt(label, "tabbar/${page.name}", style = PicoTheme.typography.labelMedium, color = LocalContentColor.current) },
             )

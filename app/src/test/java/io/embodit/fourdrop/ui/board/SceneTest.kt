@@ -65,13 +65,45 @@ class SceneTest {
         assertNull("no ring while dropping", DiscPoses.ringColumn(falling))
     }
 
-    @Test fun theFourGlowsAndTheRestDim() {
+    @Test fun theFourIsMarkedAndTheRestStayOutside() {
         val st = PlayState(phase = Phase.OVER, pos = Rules.fromCode("445566" + "3"))
         val poses = DiscPoses.all(st, 0, false)
-        val glow = poses.count { it.look == DiscLook.GLOW }
-        val dim = poses.count { it.look == DiscLook.DIM }
-        assertEquals(4, glow)
-        assertEquals(3, dim)
+        assertEquals(4, poses.count { it.look == DiscLook.GLOW })
+        assertEquals(3, poses.count { it.look == DiscLook.DIM })
+    }
+
+    /** QA #1 q1-1 (D44 「高亮时棋子本色不变」): at the end every disc's diffuse colour stays within ΔE 5 of its own colour. */
+    @Test fun theEndKeepsEveryDiscsOwnColour() {
+        for (code in listOf("4455663", "4545454", "1122334", "3344545667" + "65")) {
+            val st = PlayState(phase = Phase.OVER, pos = Rules.fromCode(code))
+            if (st.winLine == null) continue
+            val poses = DiscPoses.all(st, 10_000, false)
+            for ((k, p) in poses.withIndex()) {
+                val seat = if (k < Rules.DISCS_PER_SEAT) Seat.RED else Seat.YELLOW
+                val own = DiscFinish.own(seat)
+                val dE = DiscFinish.deltaE(DiscFinish.base(seat, p.look), own)
+                assertTrue("$code disc $k ${p.look} ΔE=%.2f".format(dE), dE <= 5.0)
+                assertTrue("no extra self-light on ${p.look}", DiscFinish.glow(p.look) <= DiscFinish.glow(DiscLook.NORMAL))
+            }
+        }
+        // the colours QA measured in v0.1.0 fail the same check, so the test would have caught q1-1
+        assertTrue(DiscFinish.deltaE(DiscFinish.scale(DiscFinish.RED, 0.62f), DiscFinish.RED) > 5.0)
+        // red and cream stay far apart in every look
+        for (a in DiscLook.entries) for (b in DiscLook.entries)
+            assertTrue(DiscFinish.deltaE(DiscFinish.base(Seat.RED, a), DiscFinish.base(Seat.YELLOW, b)) > 40.0)
+    }
+
+    @Test fun theFourGetsAHaloRoundEachHole() {
+        val st = PlayState(phase = Phase.OVER, pos = Rules.fromCode("4455663"), overAt = 0)
+        val line = st.winLine!!
+        assertEquals(1, DiscPoses.halos(st, 0, false).size)
+        val all = DiscPoses.halos(st, Motion.WINBAR_MS, false)
+        assertEquals(4, all.size)
+        for ((h, c) in all.zip(line)) {
+            assertEquals(Layout.colX(c.col), h.x, 1e-5f); assertEquals(Layout.rowY(c.row), h.y, 1e-5f); assertEquals(Layout.RING_Z, h.z, 1e-6f)
+        }
+        assertEquals(4, DiscPoses.halos(st, 0, true).size)
+        assertTrue(DiscPoses.halos(PlayState(phase = Phase.PLAY, pos = Rules.fromCode("445566")), 0, false).isEmpty())
     }
 
     @Test fun theDumpEmptiesTheRackAndRefillsTheTrays() {

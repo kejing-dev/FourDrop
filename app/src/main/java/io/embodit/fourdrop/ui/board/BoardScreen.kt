@@ -43,11 +43,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
-/** Runs the volume's per-frame motion inside the ECS (never in Compose) and feeds the window's level gate. */
+/** Runs the volume's per-frame motion inside the ECS (never in Compose). */
 class BoardFrameSystem : System() {
     override fun update(context: SceneUpdateContext) {
         SceneHolder.scene?.onFrame(context.deltaTime)
-        SceneHolder.graph?.window?.stepFrame()
     }
 }
 
@@ -62,7 +61,7 @@ internal object SceneHolder {
 }
 
 /**
- * The rack volume (default container). Opens the control window beside it through the level gate, builds the scene
+ * The rack volume (default container). Opens the control window beside it, builds the scene
  * and routes every pinch / trigger / drag on a holder (column, own tray, slide handle) to [GameFlow] through the factory
  * board-input template (D50: hand ray, controller ray and eye-hand alike).
  */
