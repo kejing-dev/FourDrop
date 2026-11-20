@@ -26,7 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -38,9 +42,25 @@ import com.pico.spatial.ui.design.PicoTheme
 import com.pico.spatial.ui.design.Slider
 import com.pico.spatial.ui.design.Switch
 import com.pico.spatial.ui.design.Text
+import io.embodit.fourdrop.platform.BackKeys
 import io.embodit.fourdrop.platform.TAG
 import io.embodit.fourdrop.platform.VOLUME_PERCENT
 import io.embodit.fourdrop.ui.theme.FDColors
+
+/**
+ * D60 (QA #2 note): controller keys never press a window button. Buttons, rows and the slider cannot take focus (so
+ * ENTER / A have nothing to click), and the window eats A / X / Y / ENTER / DPAD_CENTER (logged, unassigned); BACK and
+ * controller B go to the one back handler (BackKeys), never to a focused control.
+ */
+internal val PAD_KEYS = setOf(Key.ButtonA, Key.ButtonB, Key.ButtonX, Key.ButtonY, Key.Enter, Key.NumPadEnter, Key.DirectionCenter)
+
+internal fun Modifier.eatPadKeys(where: String): Modifier = onPreviewKeyEvent { e ->
+    if (BackKeys.route(e.nativeKeyEvent, "compose:$where")) true
+    else if (e.key in PAD_KEYS) { Log.i(TAG, "KEY eaten $where ${e.key}"); true } else false
+}
+
+internal val NoFocus: Modifier = Modifier.focusProperties { canFocus = false }
+
 
 /** Text that logs "OVERFLOW <panel>/<control>" whenever it is cut (profile D13; ui-audit runs read the log). */
 @Composable
@@ -66,7 +86,7 @@ private val BUTTON = ButtonDefaults.Regular.copy(height = 64.dp, minWidth = 120.
 internal fun PrimaryButton(text: String, tag: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, icon: Int? = null) {
     val fg = PicoTheme.colorScheme.labelPrimaryLight
     Button(
-        onClick = onClick, modifier = modifier.alpha(if (enabled) 1f else 0.55f), enabled = enabled,
+        onClick = onClick, modifier = modifier.then(NoFocus).alpha(if (enabled) 1f else 0.55f), enabled = enabled,
         size = BUTTON, shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PicoTheme.colorScheme.interaction, contentColor = fg),
     ) {
@@ -84,7 +104,7 @@ internal fun SecondaryButton(text: String, tag: String, onClick: () -> Unit, mod
     val fg = if (danger) FDColors.OnError else PicoTheme.colorScheme.labelPrimary
     // a disabled button keeps its colours at 55 % (the SpatialUI disabled grey is ~1.2:1 on the glass, pruning-class lesson)
     Button(
-        onClick = onClick, modifier = modifier.alpha(if (enabled) 1f else 0.55f), enabled = enabled,
+        onClick = onClick, modifier = modifier.then(NoFocus).alpha(if (enabled) 1f else 0.55f), enabled = enabled,
         size = BUTTON, shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = if (danger) FDColors.Error else PicoTheme.colorScheme.fillSecondary, contentColor = fg),
     ) {
@@ -102,7 +122,7 @@ internal fun SecondaryButton(text: String, tag: String, onClick: () -> Unit, mod
 internal fun ToggleButton(text: String, tag: String, on: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, icon: Int? = null) {
     val fg = if (on) PicoTheme.colorScheme.labelPrimaryLight else PicoTheme.colorScheme.labelPrimary
     Button(
-        onClick = onClick, modifier = modifier,
+        onClick = onClick, modifier = modifier.then(NoFocus),
         size = BUTTON, shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = if (on) PicoTheme.colorScheme.interaction else PicoTheme.colorScheme.fillSecondary, contentColor = fg),
     ) {
@@ -119,7 +139,7 @@ internal fun ToggleButton(text: String, tag: String, on: Boolean, onClick: () ->
 @Composable
 internal fun SwitchRow(label: String, tag: String, checked: Boolean, icon: Int, onChange: (Boolean) -> Unit) {
     Row(
-        Modifier.fillMaxWidth().height(64.dp).clip(RoundedCornerShape(20.dp)).background(FDColors.CardFace)
+        Modifier.fillMaxWidth().height(64.dp).clip(RoundedCornerShape(20.dp)).background(FDColors.CardFace).then(NoFocus)
             .toggleable(value = checked, role = androidx.compose.ui.semantics.Role.Switch, onValueChange = onChange).padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -134,7 +154,7 @@ internal fun SwitchRow(label: String, tag: String, checked: Boolean, icon: Int, 
 @Composable
 internal fun PickerRow(label: String, value: String, tag: String, icon: Int, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().height(64.dp).clip(RoundedCornerShape(20.dp)).background(FDColors.CardFace).clickable(onClick = onClick).padding(horizontal = 18.dp),
+        Modifier.fillMaxWidth().height(64.dp).clip(RoundedCornerShape(20.dp)).background(FDColors.CardFace).then(NoFocus).clickable(onClick = onClick).padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.size(24.dp), tint = FDColors.Ink)
@@ -151,7 +171,7 @@ internal fun ChoiceRow(title: String, note: String?, selected: Boolean, tag: Str
         Modifier.fillMaxWidth().height(60.dp).clip(RoundedCornerShape(18.dp))
             .background(if (selected) FDColors.PrimaryContainer else FDColors.CardFace)
             .border(if (selected) 2.dp else 0.dp, if (selected) FDColors.Primary else Color.Transparent, RoundedCornerShape(18.dp))
-            .clickable(onClick = onClick).padding(horizontal = 18.dp),
+            .then(NoFocus).clickable(onClick = onClick).padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(Modifier.size(18.dp).clip(CircleShape).border(2.dp, FDColors.Ink, CircleShape).padding(4.dp)) {
@@ -183,7 +203,7 @@ internal fun VolumeRow(label: String, level: Int, names: List<String>, icon: Int
             onValueChange = { v -> local = (v * 2f).coerceIn(0f, 2f) },
             // snap on release (a tap lands too): the stop and the number move together
             onValueChangeFinished = { val stop = kotlin.math.round(local).toInt().coerceIn(0, 2); local = stop.toFloat(); change(stop) },
-            modifier = Modifier.weight(1f).height(48.dp),
+            modifier = Modifier.weight(1f).height(48.dp).then(NoFocus),
         )
         Box(Modifier.width(12.dp))
         val k = local.let { kotlin.math.round(it).toInt().coerceIn(0, 2) }

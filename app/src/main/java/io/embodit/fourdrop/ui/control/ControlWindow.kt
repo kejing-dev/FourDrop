@@ -31,7 +31,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -109,7 +108,7 @@ fun ControlWindow() {
     var now by remember { mutableLongStateOf(SystemClock.uptimeMillis()) }
     LaunchedEffect(Unit) { while (true) { kotlinx.coroutines.delay(250); now = SystemClock.uptimeMillis() } }
 
-    Box(Modifier.fillMaxSize().onPreviewKeyEvent { e -> BackKeys.route(e.nativeKeyEvent, "compose:window") }.padding(horizontal = 24.dp, vertical = 20.dp)) {
+    Box(Modifier.fillMaxSize().eatPadKeys("window").padding(horizontal = 24.dp, vertical = 20.dp)) {
         when {
             Ui.dialog == Dialog.OPPONENT -> OpponentDialog(state, graph)
             Ui.dialog == Dialog.LANGUAGE -> LanguageDialog(settings, graph)
